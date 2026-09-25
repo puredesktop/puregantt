@@ -1,0 +1,8 @@
+{
+  "appNames": [
+    "PureGantt"
+  ],
+  "idea": "Build interactive Frappe Gantt project timelines with dependencies, progress, and .gantt packages.",
+  "questions": [],
+  "selectedAppName": "PureGantt"
+}

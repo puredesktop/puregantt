@@ -1,0 +1,286 @@
+{
+  "id": "gantt",
+  "name": "PureGantt",
+  "permissions": [
+    "filesystem",
+    "settings",
+    "agents"
+  ],
+  "entrypoint": {
+    "kind": "dev-url",
+    "url": "http://localhost:5380"
+  },
+  "app": {
+    "id": "plugin.puregantt",
+    "slug": "gantt",
+    "name": "PureGantt",
+    "navigationLabel": "Gantt",
+    "productName": "ps.gantt",
+    "kind": "desktop",
+    "description": "Plan project timelines: tasks with dates, progress, phases, owners and dependencies, saved as .gantt packages.",
+    "openableNameSuffixes": [
+      ".gantt",
+      ".gantt.json"
+    ],
+    "createEntities": [
+      {
+        "id": "gantt-package",
+        "label": "Gantt",
+        "description": "Create a new Gantt timeline package.",
+        "kind": "package",
+        "appSlug": "gantt",
+        "defaultName": "Untitled gantt",
+        "packageSuffix": ".gantt",
+        "packageManifestFile": "manifest.json",
+        "packageContentFile": "gantt.gantt.json",
+        "packageAssetsDir": "assets",
+        "template": "{\n  \"schemaVersion\": 1,\n  \"title\": \"Untitled gantt\",\n  \"viewMode\": \"Month\",\n  \"tasks\": []\n}\n"
+      }
+    ],
+    "brand": {
+      "letter": "g",
+      "label": "Gantt"
+    },
+    "agents": {
+      "tools": [
+        {
+          "name": "getGanttContext",
+          "risk": "read",
+          "description": "Call this first. Returns the timeline: title, path, view mode, phases, task count, date span, agent-log size, and the chart view (phase filter, density, zoom, overlays).",
+          "inputSchema": {
+            "type": "object",
+            "properties": {}
+          },
+          "requiresApproval": false
+        },
+        {
+          "name": "listTasks",
+          "risk": "read",
+          "description": "List the tasks with ids, names, dates (YYYY-MM-DD), progress, dependencies, phase, owner, and milestone flags. Optionally filtered to one phase.",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "phase": {
+                "type": "string"
+              }
+            }
+          },
+          "requiresApproval": false
+        },
+        {
+          "name": "listGanttChanges",
+          "risk": "read",
+          "description": "The agent log: recent agent writes to the timeline, newest first, with tool, summary, and task. Check it before repeating work another agent already did.",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "limit": {
+                "type": "number"
+              }
+            }
+          },
+          "requiresApproval": false
+        },
+        {
+          "name": "createTasks",
+          "description": "Add tasks to the timeline: name, start and end (YYYY-MM-DD), optional id, progress, dependencies (existing or in-batch ids), phase, owner, milestone. Ids are derived from names when omitted. Dependencies must flow one way: a batch that closes a loop is refused. Recorded in the agent log. Pass a one-line summary — it is the line the user reads in the log.",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "summary": {
+                "type": "string"
+              },
+              "tasks": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "start": {
+                      "type": "string"
+                    },
+                    "end": {
+                      "type": "string"
+                    },
+                    "id": {
+                      "type": "string"
+                    },
+                    "progress": {
+                      "type": "number"
+                    },
+                    "dependencies": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "phase": {
+                      "type": "string"
+                    },
+                    "owner": {
+                      "type": "string"
+                    },
+                    "milestone": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "name",
+                    "start",
+                    "end"
+                  ]
+                }
+              }
+            },
+            "required": [
+              "summary",
+              "tasks"
+            ]
+          },
+          "requiresApproval": true
+        },
+        {
+          "name": "updateTasks",
+          "description": "Edit tasks in one batch: each update names a task (id or name) and the fields to change — dates, progress, dependencies, phase, owner, milestone, name. One call carries a whole ripple. Dependent tasks outside the batch are named in the result but never moved automatically; a dependency change that closes a loop is refused. Each task's before/after is recorded in the agent log under the shared summary.",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "summary": {
+                "type": "string"
+              },
+              "updates": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "task": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "start": {
+                      "type": "string"
+                    },
+                    "end": {
+                      "type": "string"
+                    },
+                    "progress": {
+                      "type": "number"
+                    },
+                    "dependencies": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "phase": {
+                      "type": "string"
+                    },
+                    "owner": {
+                      "type": "string"
+                    },
+                    "milestone": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "task"
+                  ]
+                }
+              }
+            },
+            "required": [
+              "summary",
+              "updates"
+            ]
+          },
+          "requiresApproval": true
+        },
+        {
+          "name": "deleteTask",
+          "risk": "destructive",
+          "description": "Remove one task by id or name, and strip it from other tasks' dependencies. Recorded in the agent log with the removed task snapshot.",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "task": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "task"
+            ]
+          },
+          "requiresApproval": true
+        },
+        {
+          "name": "setTimeline",
+          "description": "Update timeline settings: title, view mode (Day, Week, Month, Year), or the phase list (an empty list clears it; tasks keep their own phase names). Recorded in the agent log.",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "title": {
+                "type": "string"
+              },
+              "viewMode": {
+                "type": "string"
+              },
+              "phases": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "summary": {
+                "type": "string"
+              }
+            }
+          },
+          "requiresApproval": true
+        },
+        {
+          "name": "setView",
+          "risk": "read",
+          "description": "Change how the chart is looked at, without touching the timeline: filter to one phase (or \"all\"), density, zoom, and the links/weekends/owners overlays. Same controls as the sidebar. Not saved, not logged.",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "phaseFilter": {
+                "type": "string",
+                "description": "A phase name from getGanttContext, or \"all\"."
+              },
+              "density": {
+                "type": "string",
+                "enum": [
+                  "compact",
+                  "comfortable"
+                ]
+              },
+              "zoom": {
+                "type": "string",
+                "enum": [
+                  "fit",
+                  "detail",
+                  "wide"
+                ]
+              },
+              "showDependencies": {
+                "type": "boolean"
+              },
+              "showWeekends": {
+                "type": "boolean"
+              },
+              "showOwners": {
+                "type": "boolean"
+              }
+            }
+          },
+          "requiresApproval": false
+        }
+      ]
+    }
+  }
+}
