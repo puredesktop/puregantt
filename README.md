@@ -2,9 +2,25 @@
 
 # puregantt
 
-## What puregantt does
+**Plan tasks, dependencies, and delivery dates.** An app for [puredesktop](https://puredesktop.ai).
+
+[Get started](#getting-started) · [App guide](docs/app-guide.md) · [Develop](docs/development.md) · [Developer account](https://puredesktop.ai/developers)
+
+## What it does
 
 A project timeline planner for tasks with dates, owners, phases, progress, and dependencies. Use it to organize a delivery plan, see how work overlaps, and update the plan as schedules change.
+
+## Requirements
+
+Use a compatible [puredesktop](https://puredesktop.ai) build for desktop integration, storage, and the app drawer. Developer setup is covered in the [development guide](docs/development.md).
+
+Create a local plan with your own tasks. Agent assistance uses the host’s configured agent service.
+
+## Getting started
+
+1. Create a plan and add your tasks with start and end dates.
+2. Assign owners, group tasks into phases, and record dependencies and progress.
+3. Review the timeline and save the editable plan as a `.gantt` package.
 
 ## App layout
 
@@ -17,31 +33,45 @@ A project timeline planner for tasks with dates, owners, phases, progress, and d
 
 The app also uses the shared [puredesktop](https://puredesktop.ai) shell and drawer agent. Panels can vary with the current view and selection.
 
-## Getting started
+## Working with the agent
 
-1. Create a plan and add your tasks with start and end dates.
-2. Assign owners, group tasks into phases, and record dependencies and progress.
-3. Review the timeline and save the editable plan as a `.gantt` package.
+Open the app’s drawer in [puredesktop](https://puredesktop.ai) and describe what you want to do. For example:
 
-Read the [app guide](docs/app-guide.md) for development, loading, and source-layout details.
+> List the tasks in this plan.
+>
+> Move the selected task to next week.
+
+The app exposes 8 tools, including `getGanttContext`, `listTasks`, `listGanttChanges`. See [agents.md](agents.md) for workflows and [plugin.json](plugin.json) for the complete tool schemas and approval flags. Some actions apply directly, while approval-marked actions ask first. Check the result in the app after a change.
+
+## Files and data
+
+Plans are saved as editable `.gantt` packages, including tasks, dates, phases, owners, progress, and dependencies.
 
 ## Develop and customize
 
-We welcome **developers and vibecoders alike**. You can add features to puregantt, develop a fork, or create a new app for [puredesktop](https://puredesktop.ai).
+We welcome **developers and vibecoders alike**. Fork puregantt, add a feature, or use what you learn to build a new app.
 
-### Use Claude Code, Codex, or your own tools
+| Develop your way | Workflow |
+| --- | --- |
+| **Claude Code, Codex, or your editor** | Open the app’s source folder, read `README.md`, `plugin.json`, `package.json`, and `agents.md`, then make changes and run the app’s checks. Test inside [puredesktop](https://puredesktop.ai) with matching shared platform packages. |
+| **purefactory** | Choose **Start building** for a new app, or select an available app project to extend it. Use **Open folder** for external tools and **Open app** to test. |
+| **App drawer** | Request a local app change where app-development integration is available. Make clear whether you want to change the app itself or its current document. |
 
-Open a local source checkout or a purefactory project's folder in your preferred coding tool. Ask it to read this README, `plugin.json`, `package.json`, `agents.md`, and the [development guide](docs/development.md) before making changes. Review the changes, run the app's checks, and test it inside [puredesktop](https://puredesktop.ai). This source may require matching shared platform packages; a browser preview alone does not provide desktop services.
+Use **Share** in purefactory to create a `.pureapp` package, then **Settings → System → Install an app → Choose package…** to load it in current builds. Source availability and integration vary by host build.
 
-The [development guide](docs/development.md) explains how to start Claude Code or Codex in the project, work on this repository, and load your app into the desktop.
+Follow the [development guide](docs/development.md) for Claude Code/Codex commands, app-specific setup and checks, and packaging. A standalone browser preview does not provide every desktop service.
 
-### Use purefactory inside the desktop
+## Documentation and limitations
 
-Open **purefactory** (Factory) to describe a new app, or select an available app project and request a feature. Use **Open folder** to continue with external tools and **Open app** to test the result. You can also request a local app change through the app's drawer where app-development integration is available; distinguish changing the app from editing its current document.
+| Guide | What it covers |
+| --- | --- |
+| [App guide](docs/app-guide.md) | App overview, source layout, and usage. |
+| [Development guide](docs/development.md) | External coding tools, purefactory, checks, and installation. |
+| [Agent guide](agents.md) | App-specific agent workflows and constraints. |
 
-Use **Share** in purefactory to create a `.pureapp` package. In current builds, install it through **Settings → System → Install an app → Choose package…**. See the [development guide](docs/development.md#load-and-share-your-app) for the full workflow and version differences.
+Review dependent dates after changing a schedule. The current timeline is implemented with local React components; Frappe Gantt is an acknowledged earlier foundation.
 
-## Developer accounts and the marketplace
+## Contributing and marketplace
 
 We welcome **developers and vibecoders alike**. Go to [puredesktop.ai](https://puredesktop.ai) and [create a developer account](https://puredesktop.ai/developers) to join the developer community and submit your app for review.
 
@@ -49,13 +79,11 @@ Bring improvements to this app, develop a fork, or build something entirely new.
 
 For developer access, app submissions, or marketplace questions, contact [info@puredesktop.ai](mailto:info@puredesktop.ai).
 
-## Open source and contributions
+Anyone may use, study, modify, and share this app under its applicable licenses. We welcome pull requests, bug reports, and documentation improvements. See [CONTRIBUTING.md](CONTRIBUTING.md).
+
+## Credits and license
 
 A Gantt planning app based on open-source projects including [React](https://github.com/facebook/react) and [styled-components](https://github.com/styled-components/styled-components). This snapshot implements its Gantt workspace in the app source; no separate upstream Gantt library is declared.
-
-Anyone may use, study, modify, and share this software under the applicable licenses.
-We welcome pull requests, bug reports, documentation improvements, and new ideas.
-See [CONTRIBUTING.md](CONTRIBUTING.md) for how to contribute.
 
 ### License
 
@@ -72,7 +100,6 @@ Copyright (c) 2026 pure.science inc. Third-party code, dependencies, and assets 
 
 Thank you to these projects and their contributors. Additional direct dependencies,
 upstream links, and asset notices are listed in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
-
 
 ### Earlier Gantt foundation
 
