@@ -1525,7 +1525,7 @@ export function GanttWorkspace({
             <option key={owner} value={owner} />
           ))}
         </datalist>
-        <div className="gantt-chart-panel" data-chrome="paper">
+        <div className="gantt-chart-panel">
           <div className="gantt-chart-head">
             <div>
               <strong>{document.title}</strong>

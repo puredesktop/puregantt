@@ -9,8 +9,8 @@
 /* The chart's own colours relit for the dark theme. Chrome colours (panels,
    lines, ink, accent) are platform tokens and need no override. */
 [data-platform-theme='dark'] .gantt-shell {
-  --gantt-grid: #313135;
-  --gantt-grid-soft: #2a2a2e;
+  --gantt-grid: var(--glass-line);
+  --gantt-grid-soft: color-mix(in srgb, var(--platform-colors-text) 5%, transparent);
   --gantt-today: #ececef;
   --gantt-on-today: #202024;
   --gantt-weekend: rgba(255, 255, 255, 0.045);
@@ -35,14 +35,14 @@ body {
    stay the chart's. */
 .gantt-shell {
   --surface: var(--pure-chrome-surface);
-  --canvas: var(--pure-chrome-paper);
+  --canvas: transparent;
   --well: var(--pure-chrome-well);
   --gantt-bg: var(--platform-colors-bg);
   --gantt-panel: var(--surface);
   --gantt-panel-soft: var(--well);
   --gantt-border: var(--pure-chrome-line);
-  --gantt-grid: #e9ecef;
-  --gantt-grid-soft: #f0f2f3;
+  --gantt-grid: var(--glass-line);
+  --gantt-grid-soft: color-mix(in srgb, var(--platform-colors-text) 5%, transparent);
   --gantt-text: var(--platform-colors-text);
   --gantt-muted: var(--pure-chrome-muted);
   --gantt-accent: var(--pure-chrome-accent);
@@ -474,6 +474,8 @@ body {
   height: 100%;
   border-radius: var(--pure-chrome-radius);
   overflow: hidden;
+  background: var(--glass-panel);
+  border: 1px solid var(--glass-line);
 }
 
 .gantt-chart-head {
