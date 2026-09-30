@@ -1209,3 +1209,21 @@ body {
 .gantt-selected-kicker {
   color: var(--gantt-muted);
 }
+
+/* The chart head carries the one editable title. */
+.gantt-chart-title-input {
+  display: block;
+  border-bottom-color: transparent;
+  padding-bottom: 2px;
+}
+
+.gantt-chart-title-input:hover,
+.gantt-chart-title-input:focus {
+  border-bottom-color: var(--gantt-border);
+}
+
+/* The status line wraps rather than cutting off (the shared meta style is nowrap). */
+.gantt-sidebar .gantt-status {
+  flex-wrap: wrap;
+  white-space: normal;
+}

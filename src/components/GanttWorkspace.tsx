@@ -1219,19 +1219,6 @@ export function GanttWorkspace({
         data-chrome="sidebar"
         aria-label="Timeline controls"
       >
-        <section className="gantt-title-block">
-          <input
-            aria-label="Timeline title"
-            className="gantt-title-input"
-            value={document.title}
-            onBlur={() => onCommitTitle(document.title)}
-            onChange={event => updateDocument({ title: event.target.value })}
-          />
-          <div className="gantt-path" data-chrome="meta">
-            {fileNameFromPath(documentPath)}
-          </div>
-        </section>
-
         <section className="gantt-stats" aria-label="Overview">
           <div>
             <strong>{taskCount}</strong>
@@ -1528,8 +1515,17 @@ export function GanttWorkspace({
         <div className="gantt-chart-panel">
           <div className="gantt-chart-head">
             <div>
-              <strong>{document.title}</strong>
-              <span data-chrome="meta">{filteredTasks.length} visible tasks</span>
+              {/* The one title: editable here, where the plan is. */}
+              <input
+                aria-label="Timeline title"
+                className="gantt-title-input gantt-chart-title-input"
+                value={document.title}
+                onBlur={() => onCommitTitle(document.title)}
+                onChange={event => updateDocument({ title: event.target.value })}
+              />
+              <span data-chrome="meta">
+                {fileNameFromPath(documentPath)} · {filteredTasks.length} visible tasks
+              </span>
             </div>
             <div className="gantt-legend">
               {phases.slice(0, 6).map(phase => (
