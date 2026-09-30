@@ -1148,3 +1148,82 @@ body {
     padding: 12px;
   }
 }
+
+/* ── Tidy sidebar ─────────────────────────────────────────────────────────
+   The overview is one quiet strip, not three boxes; controls sit in rows
+   (view + zoom, find, phase + new phase) at one height and radius; the
+   selection is a quiet outlined section, not a purple strip. */
+.gantt-stats {
+  gap: 0;
+  border-top: 1px solid var(--gantt-border);
+  border-bottom: 1px solid var(--gantt-border);
+}
+
+.gantt-stats div {
+  border: 0;
+  background: transparent;
+  padding: 8px 0 8px 10px;
+}
+
+.gantt-stats div + div {
+  border-left: 1px solid var(--gantt-border);
+}
+
+.gantt-stats div:first-child {
+  padding-left: 0;
+}
+
+.gantt-compact-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-areas:
+    'view-label view-label'
+    'view zoom'
+    'find-label find-label'
+    'find find'
+    'phase phase';
+  row-gap: 6px;
+}
+
+.gantt-compact-grid label[for='view-select'] { grid-area: view-label; }
+.gantt-compact-grid #view-select { grid-area: view; }
+.gantt-compact-grid select[aria-label='Zoom'] { grid-area: zoom; }
+.gantt-compact-grid label[for='task-search'] { grid-area: find-label; margin-top: 6px; }
+.gantt-compact-grid #task-search { grid-area: find; }
+.gantt-compact-grid .gantt-phase-filter-row { grid-area: phase; }
+
+.gantt-sidebar button {
+  height: var(--pure-chrome-field-height);
+  border-radius: var(--pure-chrome-radius);
+}
+
+.gantt-selected-details {
+  border: 1px solid var(--gantt-border);
+  border-radius: var(--pure-chrome-radius);
+  background: transparent;
+}
+
+.gantt-selected-details summary {
+  background: transparent;
+}
+
+.gantt-selected-kicker {
+  color: var(--gantt-muted);
+}
+
+/* The chart head carries the one editable title. */
+.gantt-chart-title-input {
+  display: block;
+  border-bottom-color: transparent;
+  padding-bottom: 2px;
+}
+
+.gantt-chart-title-input:hover,
+.gantt-chart-title-input:focus {
+  border-bottom-color: var(--gantt-border);
+}
+
+/* The status line wraps rather than cutting off (the shared meta style is nowrap). */
+.gantt-sidebar .gantt-status {
+  flex-wrap: wrap;
+  white-space: normal;
+}
