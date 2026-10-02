@@ -1,27 +1,105 @@
-# puregantt: contribution briefs
+# puregantt contribution roadmap
 
-The first five items are small, visible starting points. Sizes describe scope rather than elapsed time. Read the linked brief before changing code.
+[View roadmap issues](https://github.com/puredesktop/puregantt/issues?q=is%3Aissue%20label%3Aroadmap)
 
-| Item | Size | Start here |
-| --- | --- | --- |
-| [See a task’s duration on its timeline bar](task-duration-tooltip.md) | Small | Good first contribution |
-| [Read long task names in short bars](long-task-name-access.md) | Small | Good first contribution |
-| [Clear an owner filter in one click](owner-filter-reset.md) | Small | Good first contribution |
-| [Find today on a busy timeline](today-marker-readability.md) | Small | Good first contribution |
-| [Choose a sample plan from a useful preview](sample-plan-labels.md) | Small | Good first contribution |
-| [Correct task dates without losing your edits](task-date-validation-messages.md) | Small |  |
-| [Preview dates while dragging a task](drag-date-preview.md) | Medium |  |
-| [Enter progress as a percentage](progress-range-guidance.md) | Small |  |
-| [Read the same phase names everywhere](phase-label-consistency.md) | Small |  |
-| [Add a task to an empty phase](phase-empty-state-guidance.md) | Small |  |
-| [See which tasks form a dependency cycle](dependency-cycle-explanation.md) | Medium |  |
-| [Recognise an existing dependency](duplicate-dependency-feedback.md) | Medium |  |
-| [Inspect both ends of a dependency](dependency-hover-context.md) | Medium |  |
-| [See which links a task deletion affects](delete-dependency-impact.md) | Medium |  |
-| [Jump to a task outside the visible dates](selected-task-visibility.md) | Medium |  |
-| [Adjust task dates from the keyboard](keyboard-date-adjustments.md) | Medium |  |
-| [Avoid duplicate owner names caused by spaces](owner-name-trimming.md) | Small |  |
-| [Understand the plan’s overview counts](overview-count-explanations.md) | Small |  |
-| [Choose a useful timeline zoom](zoom-mode-descriptions.md) | Small |  |
-| [Retry saving without losing the timeline](save-failure-continuity.md) | Medium |  |
-| [Compare your plan with a saved baseline](compare-your-plan-with-a-saved-baseline.md) | Large |  |
+Build something you can see and try in the app. The first five items are **good first contributions**: bounded changes with a concrete demonstration. Choose a feature below, fix a bug, or propose your own improvement.
+
+## Scope
+
+Keep the task timeline, existing phases, owners, progress and dependency model; avoid introducing a new scheduling system.
+
+Size describes scope, not a promised completion time: **Small** = one focused interface change; **Medium** = coordinated interface/state work; **Large** = a feature across several flows, storage or export paths. All items are proposals, not claims that existing features are absent. Check the current code and extend what is there. Maintainers review code and tests before merging. Attribution is your choice.
+
+## Good first contributions
+
+1. **[See a task’s duration on its timeline bar.](https://github.com/puredesktop/puregantt/issues/2)** Add the date-span duration to task tooltips using the same day-count convention as the current timeline.
+   <!-- contribution: {"id": "task-duration-tooltip", "size": "small", "goodFirstIssue": true, "guide": "docs/contributions/task-duration-tooltip.md"} -->
+   [Small · Good first contribution · Implementation brief](https://github.com/puredesktop/puregantt/blob/main/docs/contributions/task-duration-tooltip.md)
+
+2. **[Read long task names in short bars.](https://github.com/puredesktop/puregantt/issues/3)** Keep full task names available on focus and hover when labels are clipped by narrow columns or short bars.
+   <!-- contribution: {"id": "long-task-name-access", "size": "small", "goodFirstIssue": true, "guide": "docs/contributions/long-task-name-access.md"} -->
+   [Small · Good first contribution · Implementation brief](https://github.com/puredesktop/puregantt/blob/main/docs/contributions/long-task-name-access.md)
+
+3. **[Clear an owner filter in one click.](https://github.com/puredesktop/puregantt/issues/4)** Make an active owner filter visible beside its control and offer a one-click reset when no tasks match.
+   <!-- contribution: {"id": "owner-filter-reset", "size": "small", "goodFirstIssue": true, "guide": "docs/contributions/owner-filter-reset.md"} -->
+   [Small · Good first contribution · Implementation brief](https://github.com/puredesktop/puregantt/blob/main/docs/contributions/owner-filter-reset.md)
+
+4. **[Find today on a busy timeline.](https://github.com/puredesktop/puregantt/issues/5)** Keep the today marker distinct from task bars and include its full date in an accessible label across supported zoom levels.
+   <!-- contribution: {"id": "today-marker-readability", "size": "small", "goodFirstIssue": true, "guide": "docs/contributions/today-marker-readability.md"} -->
+   [Small · Good first contribution · Implementation brief](https://github.com/puredesktop/puregantt/blob/main/docs/contributions/today-marker-readability.md)
+
+5. **[Choose a sample plan from a useful preview.](https://github.com/puredesktop/puregantt/issues/6)** Show a short description and task count for each existing sample and reinforce that selecting it opens a new draft.
+   <!-- contribution: {"id": "sample-plan-labels", "size": "small", "goodFirstIssue": true, "guide": "docs/contributions/sample-plan-labels.md"} -->
+   [Small · Good first contribution · Implementation brief](https://github.com/puredesktop/puregantt/blob/main/docs/contributions/sample-plan-labels.md)
+
+## More improvements
+
+6. **[Correct task dates without losing your edits.](https://github.com/puredesktop/puregantt/issues/7)** Explain invalid or reversed task dates beside the edited fields and retain the draft values until corrected.
+   <!-- contribution: {"id": "task-date-validation-messages", "size": "small", "goodFirstIssue": false, "guide": "docs/contributions/task-date-validation-messages.md"} -->
+   [Small · Implementation brief](https://github.com/puredesktop/puregantt/blob/main/docs/contributions/task-date-validation-messages.md)
+
+7. **[Preview dates while dragging a task.](https://github.com/puredesktop/puregantt/issues/8)** Show the proposed start and end dates beside the task during a move or resize, before committing the existing drag operation.
+   <!-- contribution: {"id": "drag-date-preview", "size": "medium", "goodFirstIssue": false, "guide": "docs/contributions/drag-date-preview.md"} -->
+   [Medium · Implementation brief](https://github.com/puredesktop/puregantt/blob/main/docs/contributions/drag-date-preview.md)
+
+8. **[Enter progress as a percentage.](https://github.com/puredesktop/puregantt/issues/9)** Label progress as a percentage and give clear feedback for values outside the supported range rather than silently accepting them.
+   <!-- contribution: {"id": "progress-range-guidance", "size": "small", "goodFirstIssue": false, "guide": "docs/contributions/progress-range-guidance.md"} -->
+   [Small · Implementation brief](https://github.com/puredesktop/puregantt/blob/main/docs/contributions/progress-range-guidance.md)
+
+9. **[Read the same phase names everywhere.](https://github.com/puredesktop/puregantt/issues/10)** Use the same readable phase names in the task row, phase picker and summary so internal keys never leak into one view.
+   <!-- contribution: {"id": "phase-label-consistency", "size": "small", "goodFirstIssue": false, "guide": "docs/contributions/phase-label-consistency.md"} -->
+   [Small · Implementation brief](https://github.com/puredesktop/puregantt/blob/main/docs/contributions/phase-label-consistency.md)
+
+10. **[Add a task to an empty phase.](https://github.com/puredesktop/puregantt/issues/11)** Explain when a visible phase has no tasks and offer the existing add-task action with that phase selected.
+   <!-- contribution: {"id": "phase-empty-state-guidance", "size": "small", "goodFirstIssue": false, "guide": "docs/contributions/phase-empty-state-guidance.md"} -->
+   [Small · Implementation brief](https://github.com/puredesktop/puregantt/blob/main/docs/contributions/phase-empty-state-guidance.md)
+
+11. **[See which tasks form a dependency cycle.](https://github.com/puredesktop/puregantt/issues/12)** When a link would create a cycle, name the tasks in the detected cycle rather than showing only a generic rejection.
+   <!-- contribution: {"id": "dependency-cycle-explanation", "size": "medium", "goodFirstIssue": false, "guide": "docs/contributions/dependency-cycle-explanation.md"} -->
+   [Medium · Implementation brief](https://github.com/puredesktop/puregantt/blob/main/docs/contributions/dependency-cycle-explanation.md)
+
+12. **[Recognise an existing dependency.](https://github.com/puredesktop/puregantt/issues/13)** Explain that two tasks are already linked when the user repeats a dependency gesture, leaving the existing link unchanged.
+   <!-- contribution: {"id": "duplicate-dependency-feedback", "size": "medium", "goodFirstIssue": false, "guide": "docs/contributions/duplicate-dependency-feedback.md"} -->
+   [Medium · Implementation brief](https://github.com/puredesktop/puregantt/blob/main/docs/contributions/duplicate-dependency-feedback.md)
+
+13. **[Inspect both ends of a dependency.](https://github.com/puredesktop/puregantt/issues/14)** Show both task names and dates on a dependency connection so a crowded timeline is easier to inspect.
+   <!-- contribution: {"id": "dependency-hover-context", "size": "medium", "goodFirstIssue": false, "guide": "docs/contributions/dependency-hover-context.md"} -->
+   [Medium · Implementation brief](https://github.com/puredesktop/puregantt/blob/main/docs/contributions/dependency-hover-context.md)
+
+14. **[See which links a task deletion affects.](https://github.com/puredesktop/puregantt/issues/15)** List the number of incoming and outgoing links affected before removing a task, using the existing delete confirmation path.
+   <!-- contribution: {"id": "delete-dependency-impact", "size": "medium", "goodFirstIssue": false, "guide": "docs/contributions/delete-dependency-impact.md"} -->
+   [Medium · Implementation brief](https://github.com/puredesktop/puregantt/blob/main/docs/contributions/delete-dependency-impact.md)
+
+15. **[Jump to a task outside the visible dates.](https://github.com/puredesktop/puregantt/issues/16)** After editing a task outside the visible date range, offer a jump-to-task action instead of unexpectedly moving the viewport.
+   <!-- contribution: {"id": "selected-task-visibility", "size": "medium", "goodFirstIssue": false, "guide": "docs/contributions/selected-task-visibility.md"} -->
+   [Medium · Implementation brief](https://github.com/puredesktop/puregantt/blob/main/docs/contributions/selected-task-visibility.md)
+
+16. **[Adjust task dates from the keyboard.](https://github.com/puredesktop/puregantt/issues/17)** Offer small, explicit keyboard-accessible date-step controls in task editing, using the same validation as drag changes.
+   <!-- contribution: {"id": "keyboard-date-adjustments", "size": "medium", "goodFirstIssue": false, "guide": "docs/contributions/keyboard-date-adjustments.md"} -->
+   [Medium · Implementation brief](https://github.com/puredesktop/puregantt/blob/main/docs/contributions/keyboard-date-adjustments.md)
+
+17. **[Avoid duplicate owner names caused by spaces.](https://github.com/puredesktop/puregantt/issues/18)** Trim accidental leading and trailing spaces when committing owner names so visually identical owners do not create separate filter entries.
+   <!-- contribution: {"id": "owner-name-trimming", "size": "small", "goodFirstIssue": false, "guide": "docs/contributions/owner-name-trimming.md"} -->
+   [Small · Implementation brief](https://github.com/puredesktop/puregantt/blob/main/docs/contributions/owner-name-trimming.md)
+
+18. **[Understand the plan’s overview counts.](https://github.com/puredesktop/puregantt/issues/19)** Clarify whether overview counts reflect all tasks or the filtered view, and label completed and overdue counts consistently.
+   <!-- contribution: {"id": "overview-count-explanations", "size": "small", "goodFirstIssue": false, "guide": "docs/contributions/overview-count-explanations.md"} -->
+   [Small · Implementation brief](https://github.com/puredesktop/puregantt/blob/main/docs/contributions/overview-count-explanations.md)
+
+19. **[Choose a useful timeline zoom.](https://github.com/puredesktop/puregantt/issues/20)** Add short explanations to fit, detail and wide view choices, preserving the current timeline navigation model.
+   <!-- contribution: {"id": "zoom-mode-descriptions", "size": "small", "goodFirstIssue": false, "guide": "docs/contributions/zoom-mode-descriptions.md"} -->
+   [Small · Implementation brief](https://github.com/puredesktop/puregantt/blob/main/docs/contributions/zoom-mode-descriptions.md)
+
+20. **[Retry saving without losing the timeline.](https://github.com/puredesktop/puregantt/issues/21)** Keep an unsaved timeline visible after a write error, show the document name and provide an explicit retry without discarding edits.
+   <!-- contribution: {"id": "save-failure-continuity", "size": "medium", "goodFirstIssue": false, "guide": "docs/contributions/save-failure-continuity.md"} -->
+   [Medium · Implementation brief](https://github.com/puredesktop/puregantt/blob/main/docs/contributions/save-failure-continuity.md)
+
+21. **[Compare your plan with a saved baseline.](https://github.com/puredesktop/puregantt/issues/22)** Let users capture a named schedule baseline and show ghost bars plus date deltas beside the current plan. Baselines are comparison data, not automatic rescheduling.
+   <!-- contribution: {"id": "compare-your-plan-with-a-saved-baseline", "size": "large", "goodFirstIssue": false, "guide": "docs/contributions/compare-your-plan-with-a-saved-baseline.md"} -->
+   [Large · Implementation brief](https://github.com/puredesktop/puregantt/blob/main/docs/contributions/compare-your-plan-with-a-saved-baseline.md)
+
+## References
+
+- [App guide](https://github.com/puredesktop/puregantt/blob/main/docs/app-guide.md)
+- [Development guide](https://github.com/puredesktop/puregantt/blob/main/docs/development.md)
+- [Contributing](https://github.com/puredesktop/puregantt/blob/main/CONTRIBUTING.md)
