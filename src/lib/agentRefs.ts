@@ -23,7 +23,7 @@ export function phaseRefs(phase: string): ReturnType<typeof agentRefs> {
   return agentRefs([`phase:${phase}`, `phases:${phase}`], phase)
 }
 
-/** The open timeline document, as its path appears in getGanttContext's answer. */
+/** The open timeline document, as its path appears in getGanttContext's answer; also `@open`, the surface a write naming nothing lands on. */
 export function documentRefs(path: string | null, title?: string): ReturnType<typeof agentRefs> {
-  return agentRefs([path, path && `path:${path}`], title)
+  return agentRefs(['@open', path, path && `path:${path}`], title)
 }
