@@ -29,6 +29,7 @@ import {
 } from '../lib/ganttDependencies'
 import { GANTT_SAMPLES } from '../lib/ganttSamples'
 import { GANTT_VIEW_MODES } from '../constants'
+import { documentRefs, phaseRefs, taskRefs } from '../lib/agentRefs'
 import type {
   GanttDocument,
   GanttTask,
@@ -1399,7 +1400,7 @@ export function GanttWorkspace({
             <span className="gantt-selected-chevron" aria-hidden="true" />
           </summary>
           {selectedTask ? (
-            <div className="gantt-selected">
+            <div className="gantt-selected" {...taskRefs(selectedTask)}>
               <label>
                 Name
                 <input
@@ -1512,7 +1513,7 @@ export function GanttWorkspace({
             <option key={owner} value={owner} />
           ))}
         </datalist>
-        <div className="gantt-chart-panel">
+        <div className="gantt-chart-panel" {...documentRefs(documentPath, document.title)}>
           <div className="gantt-chart-head">
             <div>
               {/* The one title: editable here, where the plan is. */}
@@ -1529,7 +1530,7 @@ export function GanttWorkspace({
             </div>
             <div className="gantt-legend">
               {phases.slice(0, 6).map(phase => (
-                <span key={phase}>
+                <span key={phase} {...phaseRefs(phase)}>
                   <i
                     style={
                       {
@@ -1707,6 +1708,7 @@ export function GanttWorkspace({
                       role="button"
                       tabIndex={0}
                       data-task-id={task.id}
+                      {...taskRefs(task)}
                       aria-label={`${task.name} (${task.start} to ${task.end})`}
                       className={`gantt-task-bar ${
                         selected ? 'is-selected' : ''
@@ -1873,6 +1875,7 @@ export function GanttWorkspace({
                   key={task.id}
                   role="button"
                   tabIndex={0}
+                  {...taskRefs(task)}
                   className={`gantt-task-label ${
                     task.id === selectedTaskId ? 'is-selected' : ''
                   }`}
