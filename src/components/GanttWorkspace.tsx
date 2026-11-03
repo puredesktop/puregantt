@@ -1,3 +1,4 @@
+import { compactPart } from '../hooks/useCompactInRoom'
 import {
   useEffect,
   useId,
@@ -51,6 +52,8 @@ interface GanttWorkspaceProps {
   onLoadSample: (document: GanttDocument) => void
   /** Assigned every render so the drawer's setView tool shares this state. */
   viewRef: RefObject<GanttViewControls | null>
+  /** Held inside a page (useCompactInRoom): the plan first; a task opens beside it when selected. */
+  compact?: boolean
 }
 
 type Density = 'compact' | 'comfortable'
@@ -326,6 +329,7 @@ export function GanttWorkspace({
   onNew,
   onLoadSample,
   viewRef,
+  compact = false,
 }: GanttWorkspaceProps): React.ReactElement {
   const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null)
   // A refused edit (a dependency loop) explained in the footer until the
@@ -1214,7 +1218,7 @@ export function GanttWorkspace({
   })
 
   return (
-    <main className="gantt-shell" data-app="gantt">
+    <main className="gantt-shell" data-app="gantt" {...(compact ? { 'data-compact': selectedTask || selectedDependencyKey ? 'with-selected' : 'plan' } : undefined)}>
       <aside
         className="gantt-sidebar"
         data-chrome="sidebar"
@@ -1378,6 +1382,7 @@ export function GanttWorkspace({
             <button
               type="button"
               className="gantt-button-primary"
+              {...compactPart(compact, 'hide')}
               onClick={() => addTask()}
             >
               Add task
@@ -1393,7 +1398,7 @@ export function GanttWorkspace({
           </div>
         </section>
 
-        <details className="gantt-control-group gantt-selected-details">
+        <details className="gantt-control-group gantt-selected-details" {...(compact ? { open: true } : undefined)}>
           <summary>
             <span className="gantt-selected-kicker">Selected</span>
             {selectedTask ? <strong>{selectedTask.name}</strong> : null}
@@ -1524,7 +1529,7 @@ export function GanttWorkspace({
                 onBlur={() => onCommitTitle(document.title)}
                 onChange={event => updateDocument({ title: event.target.value })}
               />
-              <span data-chrome="meta">
+              <span data-chrome="meta" {...compactPart(compact, 'hide')}>
                 {fileNameFromPath(documentPath)} · {filteredTasks.length} visible tasks
               </span>
             </div>

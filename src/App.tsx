@@ -15,6 +15,7 @@ import {
 } from '@purescience/platform-ui/components/common/documents'
 import { isStandaloneDevMode, readTextFile } from './bridge/platformBridge'
 import { ganttSnapshotHtml } from './lib/ganttSnapshot'
+import { useCompactInRoom } from './hooks/useCompactInRoom'
 import { GanttWorkspace } from './components/GanttWorkspace'
 import {
   AUTOSAVE_DELAY_MS,
@@ -114,6 +115,7 @@ function GanttDocumentApp({
   const [status, setStatus] = useState('Add a task to start planning.')
   const [error, setError] = useState<string | null>(null)
   const [switcherOpen, setSwitcherOpen] = useState(false)
+  const compact = useCompactInRoom()
 
   // The live document. Kept current synchronously by every writer so agent
   // tool handlers, which run between renders, never build on a stale copy.
@@ -367,6 +369,7 @@ function GanttDocumentApp({
 
   return (
     <AppFrame
+      {...(compact ? { 'data-compact-room': '' } : undefined)}
       data-app={GANTT_APP_SLUG}
       identityAppSlug={GANTT_APP_SLUG}
       headerDocumentName={
@@ -390,6 +393,7 @@ function GanttDocumentApp({
         onNew={createNewGantt}
         onLoadSample={loadSample}
         viewRef={viewRef}
+        compact={compact}
       />
       <DocumentSwitcher
         appSlug={GANTT_APP_SLUG}
