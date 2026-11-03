@@ -4,10 +4,7 @@ import { AppFrame } from '@purescience/platform-bridge/components/AppFrame'
 import { EmptyState } from '@purescience/platform-ui/components/common/feedback/EmptyState'
 import { usePlatformBridge } from '@purescience/platform-ui/bridge/react/usePlatformBridge'
 import { usePlatformViewportResource } from '@purescience/platform-ui/bridge/react/usePlatformViewportResource'
-import {
-  useDocumentLifecycle,
-  type DocumentLifecycle,
-} from '@purescience/platform-ui/bridge/react/useDocumentLifecycle'
+import type { DocumentLifecycle } from '@purescience/platform-ui/bridge/react/useDocumentLifecycle'
 import { useDocumentHotkeys } from '@purescience/platform-ui/bridge/react/useDocumentHotkeys'
 import {
   DocumentHeaderActions,
@@ -16,6 +13,8 @@ import {
 import { isStandaloneDevMode, readTextFile } from './bridge/platformBridge'
 import { ganttSnapshotHtml } from './lib/ganttSnapshot'
 import { useCompactInRoom } from './hooks/useCompactInRoom'
+import { useSharedDocument } from './hooks/useSharedDocument'
+import { mergeGantts } from './lib/ganttMerge'
 import { GanttWorkspace } from './components/GanttWorkspace'
 import {
   AUTOSAVE_DELAY_MS,
@@ -240,18 +239,27 @@ function GanttDocumentApp({
     [transitionError],
   )
 
-  const lifecycle = useDocumentLifecycle({
+  const lifecycle = useSharedDocument({
     appSlug: GANTT_APP_SLUG,
     suffix: GANTT_PACKAGE_SUFFIX,
     kind: 'package',
     suggestedTitle: document.title,
     debounceMs: AUTOSAVE_DELAY_MS,
     onSaved: () => setStatus('Saved.'),
-    // An agent or another app rewrote the open package on disk. Reload
-    // unless the user has unsaved edits here.
-    onExternalChange: ({ path, dirty }) => {
-      if (dirty || path !== documentPathRef.current) return
-      void openGanttPath(path, true)
+    // An agent, another app or a second copy of this one rewrote the open
+    // package on disk. Reload, or merge if this copy has unsaved edits.
+    contentFile: GANTT_DOCUMENT_FILE,
+    parse: parseGanttDocument,
+    read: readTextFile,
+    live: () => documentRef.current,
+    merge: mergeGantts,
+    showMerged: merged => {
+      documentRef.current = merged
+      boundDocumentRef.current = merged
+      setDocument(merged)
+    },
+    reload: path => {
+      if (path === documentPathRef.current) void openGanttPath(path, true)
     },
     serialize: () => {
       const current = boundDocumentRef.current

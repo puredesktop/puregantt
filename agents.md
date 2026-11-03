@@ -222,3 +222,5 @@ record an explicit source-ID → output-ID mapping in the handoff observations.
 Tasks should retain origin resource links and source IDs in notes when relevant.
 Re-read the saved output and compare names, owners, dates and dependency mapping
 to the source. Report intentional differences and their reasons explicitly.
+
+Copies of this app can run side by side (a tab and one held inside a page). They merge each other's work on one plan task by task, so a change made in the other copy can appear while you work; read the plan again before replacing something you read earlier.
