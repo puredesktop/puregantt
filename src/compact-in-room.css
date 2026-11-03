@@ -1,0 +1,75 @@
+/* Compact PureGantt, held inside a page (useCompactInRoom). The frame carries data-compact-room only then, and every rule
+   here starts from it, so with compact off nothing in this file applies. Chrome is hidden, not removed: everything stays
+   mounted, so the plan and the agent's tools live on. Full app gives it all back. */
+
+/* The app header, the agent's prompt, and the file name under the title. */
+[data-compact-room] > header,
+[data-compact-room] .gantt-agent-bar,
+[data-compact-room] [data-compact='hide'] {
+  display: none !important;
+}
+
+/* The plan has the box. Bars move, tasks are added from "+ New", and the title is edited where it is. */
+[data-compact-room] .gantt-shell {
+  grid-template-columns: minmax(0, 1fr);
+  padding: 0;
+  gap: 0;
+}
+[data-compact-room] .gantt-shell > .gantt-sidebar {
+  display: none;
+}
+[data-compact-room] .gantt-chart-head {
+  padding: 8px 12px;
+  min-height: 0;
+}
+[data-compact-room] .gantt-chart-title-input {
+  font-size: 15px;
+}
+
+/* A selected task opens beside the plan, with what is needed to change it and nothing else. */
+[data-compact-room] .gantt-shell[data-compact='with-selected'] {
+  grid-template-columns: minmax(0, 1fr) 264px;
+}
+[data-compact-room] .gantt-shell[data-compact='with-selected'] > .gantt-canvas {
+  grid-column: 1;
+  grid-row: 1;
+}
+[data-compact-room] .gantt-shell[data-compact='with-selected'] > .gantt-sidebar {
+  display: flex;
+  flex-direction: column;
+  grid-column: 2;
+  grid-row: 1;
+  overflow: auto;
+  border-left: 1px solid var(--gantt-border);
+}
+[data-compact-room] .gantt-sidebar > :not(.gantt-selected-details):not(:has(.gantt-button-danger)) {
+  display: none;
+}
+[data-compact-room] .gantt-sidebar .gantt-button-grid {
+  grid-template-columns: minmax(0, 1fr);
+}
+[data-compact-room] .gantt-sidebar > :has(.gantt-button-danger) {
+  order: 2;
+}
+[data-compact-room] .gantt-sidebar .gantt-selected-chevron {
+  display: none;
+}
+
+/* Held inside an entry of the room: one surface, flat on the paper, with square edges and no second sheet. */
+html[data-held-in-room]:has([data-compact-room]),
+html[data-held-in-room]:has([data-compact-room]) body,
+html[data-held-in-room]:has([data-compact-room]) [data-compact-room] {
+  background: #ffffff;
+}
+html[data-held-in-room]:has([data-compact-room]) .gantt-shell {
+  --surface: #ffffff;
+  --gantt-panel: #ffffff;
+}
+html[data-held-in-room]:has([data-compact-room]) .gantt-chart-panel,
+html[data-held-in-room]:has([data-compact-room]) .gantt-canvas {
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  padding: 0;
+  margin: 0;
+}
