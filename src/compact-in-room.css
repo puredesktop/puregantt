@@ -61,15 +61,30 @@ html[data-held-in-room]:has([data-compact-room]) body,
 html[data-held-in-room]:has([data-compact-room]) [data-compact-room] {
   background: #ffffff;
 }
-html[data-held-in-room]:has([data-compact-room]) .gantt-shell {
+[data-compact-room] .gantt-shell {
   --surface: #ffffff;
   --gantt-panel: #ffffff;
+  --gantt-bg: #ffffff;
+  --glass-panel: #ffffff;
+  --canvas: #ffffff;
+  --pure-chrome-bar: #ffffff;
+  background: #ffffff;
 }
-html[data-held-in-room]:has([data-compact-room]) .gantt-chart-panel,
-html[data-held-in-room]:has([data-compact-room]) .gantt-canvas {
+[data-compact-room] .gantt-chart-panel,
+[data-compact-room] .gantt-canvas {
   border: 0;
   border-radius: 0;
   box-shadow: none;
   padding: 0;
   margin: 0;
+}
+
+/* What is under the last task is the same white page, so the plan never looks cut off. */
+[data-compact-room] .gantt-timeline-scroll,
+[data-compact-room] .gantt-chart-panel {
+  background: #ffffff;
+}
+[data-compact-room] .gantt-timeline-label-head button,
+[data-compact-room] .gantt-chart-head button {
+  border-radius: 3px;
 }
