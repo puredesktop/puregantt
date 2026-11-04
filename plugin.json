@@ -18,6 +18,9 @@
     "productName": "ps.gantt",
     "kind": "desktop",
     "description": "Plan project timelines: tasks with dates, progress, phases, owners and dependencies, saved as .gantt packages.",
+    "openableFileKinds": [
+      "folder"
+    ],
     "openableNameSuffixes": [
       ".gantt",
       ".gantt.json"
