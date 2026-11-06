@@ -1,3 +1,12 @@
+/* Follows the desk's theme: each colour is light-dark(its light value, its dark partner), the dark ones the held greys
+   of docs/held-apps.md. A light theme leaves the colour scheme as it was; a dark one says dark, and parts that asked
+   for light take --held-scheme instead. */
+[data-compact-room]:is([data-platform-theme='dark'] *),
+html[data-held-in-room]:has([data-compact-room])[data-platform-theme='dark'] {
+  color-scheme: dark;
+  --held-scheme: dark;
+}
+
 /* Compact PureGantt, held inside a page (useCompactInRoom). The frame carries data-compact-room only then, and every rule
    here starts from it, so with compact off nothing in this file applies. Chrome is hidden, not removed: everything stays
    mounted, so the plan and the agent's tools live on. Full app gives it all back. */
@@ -59,16 +68,16 @@
 html[data-held-in-room]:has([data-compact-room]),
 html[data-held-in-room]:has([data-compact-room]) body,
 html[data-held-in-room]:has([data-compact-room]) [data-compact-room] {
-  background: #ffffff;
+  background: light-dark(#ffffff, #1c1c1c);
 }
 [data-compact-room] .gantt-shell {
-  --surface: #ffffff;
-  --gantt-panel: #ffffff;
-  --gantt-bg: #ffffff;
-  --glass-panel: #ffffff;
-  --canvas: #ffffff;
-  --pure-chrome-bar: #ffffff;
-  background: #ffffff;
+  --surface: light-dark(#ffffff, #1c1c1c);
+  --gantt-panel: light-dark(#ffffff, #1c1c1c);
+  --gantt-bg: light-dark(#ffffff, #1c1c1c);
+  --glass-panel: light-dark(#ffffff, #1c1c1c);
+  --canvas: light-dark(#ffffff, #1c1c1c);
+  --pure-chrome-bar: light-dark(#ffffff, #1c1c1c);
+  background: light-dark(#ffffff, #1c1c1c);
 }
 [data-compact-room] .gantt-chart-panel,
 [data-compact-room] .gantt-canvas {
@@ -82,7 +91,7 @@ html[data-held-in-room]:has([data-compact-room]) [data-compact-room] {
 /* What is under the last task is the same white page, so the plan never looks cut off. */
 [data-compact-room] .gantt-timeline-scroll,
 [data-compact-room] .gantt-chart-panel {
-  background: #ffffff;
+  background: light-dark(#ffffff, #1c1c1c);
 }
 [data-compact-room] .gantt-timeline-label-head button,
 [data-compact-room] .gantt-chart-head button {
