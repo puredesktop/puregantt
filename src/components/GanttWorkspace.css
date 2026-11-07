@@ -37,7 +37,8 @@ body {
   --surface: var(--pure-chrome-surface);
   --canvas: transparent;
   --well: var(--pure-chrome-well);
-  --gantt-bg: var(--platform-colors-bg);
+  /* The page is white (look.ts); parts are told apart by hairlines and a shade of grey. */
+  --gantt-bg: var(--n-sheet, var(--platform-colors-bg));
   --gantt-panel: var(--surface);
   --gantt-panel-soft: var(--well);
   --gantt-border: var(--pure-chrome-line);
@@ -167,12 +168,12 @@ body {
   line-height: 1;
 }
 
-/* Sidebar captions and headings are the platform section label (mono,
+/* Sidebar captions and headings are the platform section label (sans,
    tracked, uppercase) via data-chrome="section-label"; the task-column
    head reads the same tokens. */
 .gantt-timeline-label-head {
   color: var(--gantt-muted);
-  font-family: var(--platform-typography-font-family-mono);
+  font-family: var(--platform-typography-font-family);
   font-size: var(--pure-chrome-label-size);
   font-weight: 500;
   letter-spacing: var(--pure-chrome-label-tracking);
@@ -242,30 +243,49 @@ body {
 .gantt-sidebar button {
   min-width: 0;
   height: var(--pure-chrome-control-height);
-  border: 1px solid var(--pure-chrome-line);
-  border-radius: 7px;
-  background: var(--pure-chrome-surface);
+  border: 1px solid var(--n-btn-line, var(--pure-chrome-line));
+  border-bottom-color: var(--n-btn-foot, var(--pure-chrome-line));
+  border-radius: 3px;
+  background: var(--n-sheet, var(--pure-chrome-surface));
+  box-shadow: 0 1px 1px rgb(0 0 0 / 0.08);
   color: var(--gantt-text);
   cursor: pointer;
   font: inherit;
   font-size: 12px;
-  font-weight: 500;
+  font-weight: 600;
   outline: none;
   padding: 0 10px;
 }
 
-.gantt-sidebar button:hover:not(:disabled),
+/* A button is raised plain, pressed in when pressed; a field takes the app's colour on its edge when it has focus. */
+.gantt-sidebar button:hover:not(:disabled) {
+  border-color: var(--n-btn-foot, var(--pure-chrome-line));
+  background: var(--n-hover, var(--pure-chrome-hover));
+}
+
+.gantt-sidebar button:active:not(:disabled) {
+  background: var(--n-selected, var(--pure-chrome-selection));
+  box-shadow: inset 0 1px 2px rgb(0 0 0 / 0.16);
+}
+
+.gantt-sidebar button:focus-visible {
+  outline: 2px solid var(--gantt-accent);
+  outline-offset: 2px;
+}
+
 .gantt-control-group select:focus,
 .gantt-control-group input:focus,
 .gantt-selected input:focus {
   border-color: var(--gantt-accent);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--gantt-accent) 18%, transparent);
+  box-shadow: inset 0 0 0 1px var(--gantt-accent);
 }
 
 .gantt-sidebar button:disabled {
+  border-color: var(--n-fence, var(--pure-chrome-line));
+  background: var(--n-panel, var(--pure-chrome-surface));
+  box-shadow: none;
   color: var(--gantt-muted);
-  cursor: not-allowed;
-  opacity: 0.5;
+  cursor: default;
 }
 
 .gantt-segmented {
@@ -274,16 +294,17 @@ body {
   gap: 0;
   min-width: 0;
   width: 100%;
-  border: 1px solid var(--pure-chrome-line);
-  border-radius: 7px;
+  gap: 2px;
+  border: 0;
+  border-radius: 0;
   background: transparent;
-  overflow: hidden;
 }
 
 .gantt-segmented button {
   min-width: 0;
   border: 0;
-  border-radius: 0;
+  border-radius: 3px;
+  box-shadow: none;
   background: transparent;
   color: var(--pure-chrome-soft);
   font-weight: 500;
@@ -292,8 +313,9 @@ body {
   white-space: nowrap;
 }
 
-.gantt-segmented button + button {
-  border-left: 1px solid var(--gantt-border);
+.gantt-segmented button:hover:not(:disabled):not(.is-active) {
+  background: var(--n-hover, var(--pure-chrome-hover));
+  color: var(--gantt-text);
 }
 
 .gantt-segmented button:hover:not(:disabled),
@@ -305,13 +327,17 @@ body {
 }
 
 .gantt-segmented button:focus-visible {
-  background: color-mix(in srgb, var(--app-bg, var(--gantt-accent-bg)) 70%, transparent);
+  outline: 2px solid var(--gantt-accent);
+  outline-offset: 1px;
 }
 
-.gantt-segmented .is-active {
-  background: var(--app-bg, var(--gantt-accent-bg));
-  color: var(--app-acc, var(--gantt-accent));
-  box-shadow: none;
+/* The chosen one takes the shared selected look: a hairline in the app's deep colour round a plain ground, words ink. */
+.gantt-shell .gantt-segmented .is-active,
+.gantt-shell .gantt-segmented .is-active:hover:not(:disabled) {
+  background: var(--p-chosen);
+  box-shadow: var(--p-chosen-edge);
+  color: var(--gantt-text);
+  font-weight: 600;
 }
 
 .gantt-check-row {
@@ -336,15 +362,15 @@ body {
 }
 
 .gantt-sidebar .gantt-button-primary {
-  border-color: var(--gantt-accent);
-  background: var(--gantt-accent);
-  color: var(--gantt-on-accent);
+  border-color: var(--p-text, var(--gantt-accent));
+  background: var(--p-text, var(--gantt-accent));
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.18), 0 1px 2px rgb(0 0 0 / 0.24);
+  color: var(--p-on-text, var(--gantt-on-accent));
 }
 
 .gantt-sidebar .gantt-button-primary:hover:not(:disabled) {
-  border-color: var(--app-block, var(--gantt-accent));
-  background: var(--app-block, var(--gantt-accent));
-  box-shadow: none;
+  border-color: var(--p-deep, var(--gantt-accent));
+  background: var(--p-deep, var(--gantt-accent));
 }
 
 .gantt-sidebar .gantt-phase-new {
@@ -386,7 +412,7 @@ body {
   overflow: hidden;
   gap: 0;
   border: 1px solid var(--gantt-border);
-  border-left: 3px solid var(--gantt-accent);
+  border-radius: 3px;
   background: var(--gantt-panel);
 }
 
@@ -395,7 +421,7 @@ body {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) 12px;
   gap: 10px;
-  background: var(--gantt-accent-bg);
+  background: var(--n-panel, var(--gantt-panel-soft));
   cursor: pointer;
   list-style: none;
   padding: 9px 10px 9px 12px;
@@ -406,8 +432,8 @@ body {
 }
 
 .gantt-selected-kicker {
-  color: var(--gantt-accent);
-  font-family: var(--platform-typography-font-family-mono);
+  color: var(--pure-chrome-soft);
+  font-family: var(--platform-typography-font-family);
   font-size: var(--pure-chrome-label-size);
   font-weight: 500;
   letter-spacing: var(--pure-chrome-label-tracking);
@@ -472,10 +498,10 @@ body {
   grid-template-rows: auto auto minmax(0, 1fr);
   min-width: 0;
   height: 100%;
-  border-radius: var(--pure-chrome-radius);
+  border-radius: 3px;
   overflow: hidden;
-  background: var(--glass-panel);
-  border: 1px solid var(--glass-line);
+  background: var(--n-sheet, var(--glass-panel));
+  border: 1px solid var(--n-line, var(--glass-line));
 }
 
 .gantt-chart-head {
@@ -516,15 +542,22 @@ body {
 .gantt-agent-bar button {
   flex: none;
   height: var(--pure-chrome-control-height);
-  border: 1px solid var(--gantt-accent);
-  border-radius: 7px;
-  background: var(--gantt-accent-bg);
-  color: var(--gantt-accent-text);
+  border: 1px solid var(--n-btn-line, var(--pure-chrome-line));
+  border-bottom-color: var(--n-btn-foot, var(--pure-chrome-line));
+  border-radius: 3px;
+  background: var(--n-sheet, var(--pure-chrome-surface));
+  box-shadow: 0 1px 1px rgb(0 0 0 / 0.08);
+  color: var(--gantt-text);
   cursor: pointer;
   font: inherit;
   font-size: 12px;
-  font-weight: 500;
+  font-weight: 600;
   padding: 0 12px;
+}
+
+.gantt-agent-bar button:hover {
+  border-color: var(--n-btn-foot, var(--pure-chrome-line));
+  background: var(--n-hover, var(--pure-chrome-hover));
 }
 
 .gantt-legend {
@@ -574,10 +607,13 @@ body {
 
 .gantt-timeline-label-head button {
   height: 24px;
-  border: 1px solid var(--pure-chrome-line);
-  border-radius: 7px;
-  background: transparent;
-  color: var(--pure-chrome-soft);
+  border: 1px solid var(--n-btn-line, var(--pure-chrome-line));
+  border-bottom-color: var(--n-btn-foot, var(--pure-chrome-line));
+  border-radius: 3px;
+  background: var(--n-sheet, var(--pure-chrome-surface));
+  box-shadow: 0 1px 1px rgb(0 0 0 / 0.08);
+  color: var(--gantt-text);
+  font-weight: 600;
   cursor: pointer;
   font: inherit;
   font-family: var(--platform-typography-font-family);
@@ -589,9 +625,9 @@ body {
 
 .gantt-timeline-label-head button:hover,
 .gantt-timeline-label-head button:focus-visible {
-  border-color: var(--app-acc, var(--gantt-accent));
-  background: var(--app-bg, var(--gantt-accent-bg));
-  color: var(--app-acc, var(--gantt-accent));
+  border-color: var(--n-btn-foot, var(--pure-chrome-line));
+  background: var(--n-hover, var(--pure-chrome-hover));
+  color: var(--gantt-text);
   outline: none;
 }
 
@@ -820,7 +856,7 @@ body {
   bottom: calc(100% + 3px);
   min-width: 24px;
   color: var(--gantt-text);
-  font-family: var(--platform-typography-font-family-mono);
+  font-family: var(--platform-typography-font-family);
   font-size: 10px;
   font-weight: 700;
   line-height: 1;
@@ -993,8 +1029,8 @@ body {
 }
 
 .gantt-task-label.is-selected {
-  box-shadow: inset 3px 0 0 var(--gantt-accent);
-  background: var(--gantt-accent-bg);
+  box-shadow: var(--p-chosen-edge);
+  background: var(--p-chosen);
 }
 
 .gantt-task-label strong {
@@ -1083,7 +1119,7 @@ body {
   border: 0;
   background: transparent;
   color: var(--gantt-muted);
-  font-family: var(--platform-typography-font-family-mono);
+  font-family: var(--platform-typography-font-family);
   font-size: var(--pure-chrome-meta-size);
   outline: none;
   padding: 0 0 2px;
@@ -1116,7 +1152,7 @@ body {
 .gantt-task-label span {
   overflow: hidden;
   color: var(--gantt-muted);
-  font-family: var(--platform-typography-font-family-mono);
+  font-family: var(--platform-typography-font-family);
   font-size: var(--pure-chrome-meta-size);
   text-overflow: ellipsis;
   white-space: nowrap;
