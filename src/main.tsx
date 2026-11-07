@@ -1,6 +1,6 @@
 import { createRoot } from 'react-dom/client'
 import { App } from './App'
-import { WhiteNeutral } from './whiteNeutral'
+import { GanttLook } from './ui/look'
 import './compact-in-room.css'
 
 // held inside another app's page: it lies flat in that page rather than as a page of its own (only while compact)
@@ -13,7 +13,7 @@ if (!rootElement) {
 
 createRoot(rootElement).render(
   <>
-    <WhiteNeutral />
+    <GanttLook />
     <App />
   </>,
 )
