@@ -23,13 +23,13 @@ import type { GanttAgentToolContext } from './catalog'
 
 const TASK_CAP = 100
 
-function cycleMessage(cycle: string[]): string {
+export function cycleMessage(cycle: string[]): string {
   return `That would make tasks wait on each other in a loop: ${cycle.join(
     ' -> ',
   )}. Dependencies must flow one way; drop one link in the loop and resend.`
 }
 
-function slugifyTaskId(name: string): string {
+export function slugifyTaskId(name: string): string {
   return (
     name
       .toLowerCase()
@@ -39,14 +39,14 @@ function slugifyTaskId(name: string): string {
   )
 }
 
-function uniqueTaskId(base: string, taken: Set<string>): string {
+export function uniqueTaskId(base: string, taken: Set<string>): string {
   if (!taken.has(base)) return base
   let index = 2
   while (taken.has(`${base}-${index}`)) index += 1
   return `${base}-${index}`
 }
 
-function taskByRef(
+export function taskByRef(
   document: GanttDocument,
   ref: string | null | undefined,
 ): GanttTask | undefined {
@@ -58,7 +58,7 @@ function taskByRef(
   return matches.length === 1 ? matches[0] : undefined
 }
 
-function taskView(task: GanttTask): Record<string, unknown> {
+export function taskView(task: GanttTask): Record<string, unknown> {
   return {
     id: task.id,
     name: task.name,
