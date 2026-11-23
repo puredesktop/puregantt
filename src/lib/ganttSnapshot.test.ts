@@ -5,10 +5,38 @@ import { ganttSnapshotHtml } from './ganttSnapshot'
 import type { GanttDocument } from '../types'
 
 function populated(title: string): GanttDocument {
-  const sample = GANTT_SAMPLES[0].document
+  const sampleTasks = GANTT_SAMPLES[0]?.document.tasks ?? [
+    {
+      id: 'design',
+      name: 'Design',
+      start: '2026-05-01',
+      end: '2026-05-08',
+      progress: 100,
+      phase: 'Planning',
+    },
+    {
+      id: 'build',
+      name: 'Build',
+      start: '2026-05-09',
+      end: '2026-05-20',
+      progress: 40,
+      dependencies: 'design',
+      phase: 'Execution',
+    },
+    {
+      id: 'launch',
+      name: 'Launch',
+      start: '2026-05-21',
+      end: '2026-05-21',
+      progress: 0,
+      dependencies: 'build',
+      phase: 'Execution',
+      milestone: true,
+    },
+  ]
   return {
     ...createDefaultGanttDocument(title),
-    tasks: sample.tasks.map(task => ({ ...task })),
+    tasks: sampleTasks.map(task => ({ ...task })),
   }
 }
 

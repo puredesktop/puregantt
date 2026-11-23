@@ -47,6 +47,225 @@
     "agents": {
       "tools": [
         {
+          "name": "fn_timelineOverview",
+          "risk": "read",
+          "description": "Compile a complete PureGantt timeline briefing in one call: document metadata, chart view state, date span, completion and overdue statistics, phase and owner breakdowns, milestones, deterministic critical-path and slack analysis, dependency conflict audit, optional task listing, and recent agent-log changes. Prefer this over chaining getGanttContext, listTasks, and listGanttChanges.",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "phase": {
+                "type": "string",
+                "description": "Optional phase name filter (case-insensitive) applied to the returned tasks array."
+              },
+              "owner": {
+                "type": "string",
+                "description": "Optional owner name filter (case-insensitive) applied to the returned tasks array."
+              },
+              "asOfDate": {
+                "type": "string",
+                "description": "Optional reference date (YYYY-MM-DD) used to detect overdue tasks (defaults to today)."
+              },
+              "includeTasks": {
+                "type": "boolean",
+                "description": "Include the full or filtered task list enriched with duration and slack days (default true)."
+              },
+              "recentChangesLimit": {
+                "type": "number",
+                "description": "Maximum recent agent-log entries to include (default 10, max 50; set 0 to omit)."
+              }
+            }
+          },
+          "requiresApproval": false
+        },
+        {
+          "name": "fn_analyzeBlockers",
+          "risk": "read",
+          "description": "Trace upstream blockers and downstream schedule impact across PureGantt dependency chains in one call for a specific task (by id or name), an entire phase, or all milestones and terminal deliverables. Identifies direct and transitive unfinished predecessors, root actionable blockers, overdue blockers, dependency date conflicts, and every downstream task or milestone impacted by a slip.",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "task": {
+                "type": "string",
+                "description": "Optional target task id or exact task name to inspect. Omit together with phase to inspect all milestones and terminal deliverables."
+              },
+              "phase": {
+                "type": "string",
+                "description": "Optional phase name (case-insensitive) to analyze all tasks within that phase."
+              },
+              "asOfDate": {
+                "type": "string",
+                "description": "Optional reference date (YYYY-MM-DD) used to flag overdue blockers (defaults to today)."
+              },
+              "includeCompletedPredecessors": {
+                "type": "boolean",
+                "description": "Include completed (progress = 100) upstream predecessors alongside unfinished blockers (default false)."
+              }
+            }
+          },
+          "requiresApproval": false
+        },
+        {
+          "name": "fn_shiftSchedule",
+          "risk": "write",
+          "description": "Shift one or more anchor tasks (or an entire phase) forward or backward by a number of calendar days or to a new target start date, deterministically carrying the ripple through dependent tasks in a single atomic batch. Supports cascade, conflict-only, or anchor-only ripple modes, pinned-deadline protection, dry-run diff previews, and full before/after agent-log recording.",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "summary": {
+                "type": "string",
+                "description": "One-line explanation of what moved and why (recorded in the agent log)."
+              },
+              "tasks": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Task ids or exact task names to use as shift anchors (provide tasks, phase, or both)."
+              },
+              "phase": {
+                "type": "string",
+                "description": "Optional phase name (case-insensitive); all tasks in this phase are included as shift anchors."
+              },
+              "deltaDays": {
+                "type": "number",
+                "description": "Whole calendar days to shift (positive pushes later, negative pulls earlier). Provide deltaDays or targetStart."
+              },
+              "targetStart": {
+                "type": "string",
+                "description": "New YYYY-MM-DD start date for the earliest anchor task; deltaDays is computed automatically from that anchor."
+              },
+              "rippleMode": {
+                "type": "string",
+                "enum": [
+                  "cascade",
+                  "resolveConflicts",
+                  "anchorsOnly"
+                ],
+                "description": "How dependent tasks respond: \"cascade\" (default, shifts all transitive dependents by deltaDays), \"resolveConflicts\" (pushes dependents only as needed to clear predecessor overlap), or \"anchorsOnly\" (moves only anchors and reports downstream impact)."
+              },
+              "pinTasks": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Optional task ids or exact names whose dates are fixed and must not move during the ripple."
+              },
+              "pinMilestones": {
+                "type": "boolean",
+                "description": "Keep downstream milestone tasks fixed during the ripple (default false)."
+              },
+              "dryRun": {
+                "type": "boolean",
+                "description": "Preview the exact before/after date diff and any pinned-deadline conflicts without saving or logging (default false)."
+              }
+            },
+            "required": [
+              "summary"
+            ]
+          },
+          "requiresApproval": true
+        },
+        {
+          "name": "fn_buildPlan",
+          "risk": "write",
+          "description": "Build or extend a PureGantt project plan in a single atomic call: optionally configure timeline metadata (title, view mode, phases) and add a validated task graph with explicit dates or durationDays and automatic finish-to-start dependency scheduling (optionally skipping weekends). Refuses invalid dates, unknown dependencies, or cycles, and records the change in the agent log.",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "summary": {
+                "type": "string",
+                "description": "One-line summary of the plan being created or extended (recorded in the agent log)."
+              },
+              "title": {
+                "type": "string",
+                "description": "Optional timeline title to set."
+              },
+              "viewMode": {
+                "type": "string",
+                "enum": [
+                  "Day",
+                  "Week",
+                  "Month",
+                  "Year"
+                ],
+                "description": "Optional timeline view mode to set."
+              },
+              "phases": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Optional ordered phase list to set on the timeline."
+              },
+              "mergePhases": {
+                "type": "boolean",
+                "description": "When true (default), appends any new phase names used by created tasks to the timeline phase list."
+              },
+              "defaultStart": {
+                "type": "string",
+                "description": "Optional fallback YYYY-MM-DD start date used for tasks that omit both start and dependencies."
+              },
+              "skipWeekends": {
+                "type": "boolean",
+                "description": "When auto-computing dates from durationDays or predecessor finishes, land on Monday-Friday working days (default false)."
+              },
+              "tasks": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "id": {
+                      "type": "string"
+                    },
+                    "start": {
+                      "type": "string",
+                      "description": "YYYY-MM-DD start date. Omit to auto-start after dependencies or on defaultStart."
+                    },
+                    "end": {
+                      "type": "string",
+                      "description": "YYYY-MM-DD end date. Omit when supplying durationDays or milestone: true."
+                    },
+                    "durationDays": {
+                      "type": "number",
+                      "description": "Positive whole number of inclusive days used to compute end from start when end is omitted."
+                    },
+                    "progress": {
+                      "type": "number"
+                    },
+                    "dependencies": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "phase": {
+                      "type": "string"
+                    },
+                    "owner": {
+                      "type": "string"
+                    },
+                    "milestone": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "name"
+                  ]
+                },
+                "description": "Ordered list of 1 to 100 tasks to add with explicit dates or durationDays + dependencies."
+              }
+            },
+            "required": [
+              "summary",
+              "tasks"
+            ]
+          },
+          "requiresApproval": true
+        },
+        {
           "name": "getGanttContext",
           "risk": "read",
           "description": "Call this first. Returns the timeline: title, path, view mode, phases, task count, date span, agent-log size, and the chart view (phase filter, density, zoom, overlays).",
@@ -57,35 +276,8 @@
           "requiresApproval": false
         },
         {
-          "name": "listTasks",
-          "risk": "read",
-          "description": "List the tasks with ids, names, dates (YYYY-MM-DD), progress, dependencies, phase, owner, and milestone flags. Optionally filtered to one phase.",
-          "inputSchema": {
-            "type": "object",
-            "properties": {
-              "phase": {
-                "type": "string"
-              }
-            }
-          },
-          "requiresApproval": false
-        },
-        {
-          "name": "listGanttChanges",
-          "risk": "read",
-          "description": "The agent log: recent agent writes to the timeline, newest first, with tool, summary, and task. Check it before repeating work another agent already did.",
-          "inputSchema": {
-            "type": "object",
-            "properties": {
-              "limit": {
-                "type": "number"
-              }
-            }
-          },
-          "requiresApproval": false
-        },
-        {
           "name": "createTasks",
+          "risk": "write",
           "description": "Add tasks to the timeline: name, start and end (YYYY-MM-DD), optional id, progress, dependencies (existing or in-batch ids), phase, owner, milestone. Ids are derived from names when omitted. Dependencies must flow one way: a batch that closes a loop is refused. Recorded in the agent log. Pass a one-line summary — it is the line the user reads in the log.",
           "inputSchema": {
             "type": "object",
@@ -146,6 +338,7 @@
         },
         {
           "name": "updateTasks",
+          "risk": "write",
           "description": "Edit tasks in one batch: each update names a task (id or name) and the fields to change — dates, progress, dependencies, phase, owner, milestone, name. One call carries a whole ripple. Dependent tasks outside the batch are named in the result but never moved automatically; a dependency change that closes a loop is refused. Each task's before/after is recorded in the agent log under the shared summary.",
           "inputSchema": {
             "type": "object",
@@ -203,85 +396,85 @@
           "requiresApproval": true
         },
         {
-          "name": "deleteTask",
-          "risk": "destructive",
-          "description": "Remove one task by id or name, and strip it from other tasks' dependencies. Recorded in the agent log with the removed task snapshot.",
+          "name": "discoverAppTools",
+          "risk": "read",
+          "requiresApproval": false,
+          "description": "Discover PureGantt's extended specialist tools (5 tools across audit, tasks, timeline, view) and composite functions (4 workflows). Prefer calling exposed composite functions and core tools first; use discoverAppTools when an edge case needs a specialist tool, then call it via callExtendedReadTool (for read-only tools) or callExtendedTool (for mutating tools).",
           "inputSchema": {
             "type": "object",
             "properties": {
-              "task": {
-                "type": "string"
-              }
-            },
-            "required": [
-              "task"
-            ]
-          },
-          "requiresApproval": true
-        },
-        {
-          "name": "setTimeline",
-          "description": "Update timeline settings: title, view mode (Day, Week, Month, Year), or the phase list (an empty list clears it; tasks keep their own phase names). Recorded in the agent log.",
-          "inputSchema": {
-            "type": "object",
-            "properties": {
-              "title": {
-                "type": "string"
+              "query": {
+                "type": "string",
+                "description": "Optional keywords describing the capability you need (e.g. \"audit\", \"tasks\", \"timeline\", \"view\")."
               },
-              "viewMode": {
-                "type": "string"
+              "category": {
+                "type": "string",
+                "description": "Optional category filter (audit, tasks, timeline, view, or \"all\")."
               },
-              "phases": {
+              "names": {
                 "type": "array",
                 "items": {
                   "type": "string"
-                }
+                },
+                "description": "Optional exact tool names to fetch full JSON input schemas for."
               },
-              "summary": {
-                "type": "string"
+              "includeFunctions": {
+                "type": "boolean",
+                "description": "Include already-exposed composite functions and core tools in the listing (default false: searches extended tools first)."
               }
             }
-          },
-          "requiresApproval": true
+          }
         },
         {
-          "name": "setView",
+          "name": "callExtendedReadTool",
           "risk": "read",
-          "description": "Change how the chart is looked at, without touching the timeline: filter to one phase (or \"all\"), density, zoom, and the links/weekends/owners overlays. Same controls as the sidebar. Not saved, not logged.",
+          "requiresApproval": false,
+          "description": "Call one of PureGantt's read-only extended specialist tools discovered via discoverAppTools (categories: audit, tasks, timeline, view). Strictly refuses mutating, destructive, external, or release tools.",
           "inputSchema": {
             "type": "object",
             "properties": {
-              "phaseFilter": {
+              "tool": {
                 "type": "string",
-                "description": "A phase name from getGanttContext, or \"all\"."
+                "description": "Exact name of a read-only extended tool from discoverAppTools."
               },
-              "density": {
-                "type": "string",
-                "enum": [
-                  "compact",
-                  "comfortable"
-                ]
-              },
-              "zoom": {
-                "type": "string",
-                "enum": [
-                  "fit",
-                  "detail",
-                  "wide"
-                ]
-              },
-              "showDependencies": {
-                "type": "boolean"
-              },
-              "showWeekends": {
-                "type": "boolean"
-              },
-              "showOwners": {
-                "type": "boolean"
+              "arguments": {
+                "type": "object",
+                "description": "Arguments object matching the tool’s inputSchema."
               }
-            }
+            },
+            "required": [
+              "tool"
+            ]
+          }
+        },
+        {
+          "name": "callExtendedTool",
+          "risk": "write",
+          "requiresApproval": true,
+          "riskWhen": {
+            "confirmDestructive": "destructive"
           },
-          "requiresApproval": false
+          "description": "Call one of PureGantt's mutating extended specialist tools discovered via discoverAppTools (categories: audit, tasks, timeline, view). For destructive tools, set confirmDestructive: true after checking with the user. Strictly refuses read-only tools (use callExtendedReadTool), external tools, permanent-delete tools, and release tools.",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "tool": {
+                "type": "string",
+                "description": "Exact name of a mutating extended tool from discoverAppTools."
+              },
+              "arguments": {
+                "type": "object",
+                "description": "Arguments object matching the tool’s inputSchema."
+              },
+              "confirmDestructive": {
+                "type": "boolean",
+                "description": "Required (true) when calling an extended tool marked risk: \"destructive\"."
+              }
+            },
+            "required": [
+              "tool"
+            ]
+          }
         }
       ]
     }
